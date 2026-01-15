@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Atmos - A clean weather application built with Vanilla TypeScript" />
+    <title>Atmos - Weather App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="header-content">
+          <h1 class="app-title">
+            <span class="app-icon">🌤️</span>
+            Atmos
+          </h1>
+          <div class="header-controls">
+            <button id="unit-toggle" class="control-button" aria-label="Toggle temperature unit">
+              Switch to °F
+            </button>
+            <button id="theme-toggle" class="control-button theme-toggle" aria-label="Toggle theme">
+              🌙
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="app-main">
+        <!-- Search Section -->
+        <section class="search-section">
+          <div class="search-container">
+            <input
+              type="text"
+              id="city-input"
+              class="search-input"
+              placeholder="Enter city name..."
+              aria-label="City name"
+            />
+            <button id="search-button" class="search-button" aria-label="Search weather">
+              Search
+            </button>
+          </div>
+        </section>
+
+        <!-- Weather Display Section -->
+        <section class="weather-section">
+          <div id="weather-display" class="weather-display">
+            <!-- Weather card will be rendered here -->
+            <div class="weather-card empty">
+              <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <p class="empty-text">Search for a city to see the weather</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <p class="footer-text">
+          Powered by
+          <a href="https://openweathermap.org/" target="_blank" rel="noopener noreferrer">
+            OpenWeatherMap
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <!-- Load compiled JavaScript -->
+    <script type="module" src="./dist/main.js"></script>
+  </body>
+</html>
