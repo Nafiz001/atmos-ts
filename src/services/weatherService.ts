@@ -1,17 +1,18 @@
 /**
- * Weather Service - Handles all API interactions with OpenWeatherMap
+ * Weather Service - Handles all API interactions with WeatherAPI.com
  */
 
 import type { WeatherResponse, WeatherData, WeatherError } from '../types/weather.js';
+import { config } from '../config.js';
 
 /**
- * OpenWeatherMap API Configuration
+ * WeatherAPI.com API Configuration
  */
 const API_CONFIG = {
-  BASE_URL: 'https://api.openweathermap.org/data/2.5',
-  API_KEY: 'YOUR_API_KEY_HERE', // Replace with your actual API key
+  BASE_URL: 'https://api.weatherapi.com/v1',
+  API_KEY: config.weatherApiKey,
   DEFAULT_UNITS: 'metric',
-} as const;
+}
 
 /**
  * Custom error class for weather service errors
@@ -27,12 +28,10 @@ export class WeatherServiceError extends Error {
 }
 
 /**
- * Fetch weather data from OpenWeatherMap API
+ * Fetch weather data from WeatherAPI.com
  */
 async function fetchWeatherFromAPI(city: string): Promise<WeatherResponse> {
-  const url = `${API_CONFIG.BASE_URL}/weather?q=${encodeURIComponent(
-    city
-  )}&units=${API_CONFIG.DEFAULT_UNITS}&appid=${API_CONFIG.API_KEY}`;
+  const url = `${API_CONFIG.BASE_URL}/current.json?key=${API_CONFIG.API_KEY}&q=${encodeURIComponent(city)}&aqi=no`;
 
   try {
     const response = await fetch(url);
@@ -70,16 +69,16 @@ async function fetchWeatherFromAPI(city: string): Promise<WeatherResponse> {
  */
 function transformWeatherResponse(response: WeatherResponse): WeatherData {
   return {
-    city: response.name,
-    country: response.sys.country,
-    temperature: response.main.temp,
-    feelsLike: response.main.feels_like,
-    condition: response.weather[0].main,
-    description: response.weather[0].description,
-    humidity: response.main.humidity,
-    windSpeed: response.wind.speed,
-    icon: response.weather[0].icon,
-    timestamp: response.dt,
+    city: response.location.name,
+    country: response.location.country,
+    temperature: response.current.temp_c,
+    feelsLike: response.current.feelslike_c,
+    condition: response.current.condition.text,
+    description: response.current.condition.text,
+    humidity: response.current.humidity,
+    windSpeed: response.current.wind_kph / 3.6, // Convert km/h to m/s
+    icon: response.current.condition.icon.replace('//', 'https://'),
+    timestamp: response.current.last_updated_epoch,
   };
 }
 
@@ -94,13 +93,6 @@ export async function getWeatherByCity(city: string): Promise<WeatherData> {
     throw new WeatherServiceError('City name cannot be empty', 'INVALID_INPUT');
   }
 
-  if (API_CONFIG.API_KEY === 'YOUR_API_KEY_HERE') {
-    throw new WeatherServiceError(
-      'API key not configured. Please add your OpenWeatherMap API key.',
-      'MISSING_API_KEY'
-    );
-  }
-
   const response = await fetchWeatherFromAPI(city.trim());
   return transformWeatherResponse(response);
 }
@@ -109,7 +101,38 @@ export async function getWeatherByCity(city: string): Promise<WeatherData> {
  * Validate if the API key is configured
  */
 export function isAPIKeyConfigured(): boolean {
-  return API_CONFIG.API_KEY !== 'YOUR_API_KEY_HERE';
+  return API_CONFIG.API_KEY.length > 0 && API_CONFIG.API_KEY !== 'YOUR_API_KEY_HERE';
+}
+
+/**
+ * Search for cities using WeatherAPI.com Search/Autocomplete API
+ */
+export async function searchCities(query: string): Promise<Array<{
+  name: string;
+  country: string;
+  region: string;
+  lat: number;
+  lon: number;
+}>> {
+  if (!query || query.length < 2) {
+    return [];
+  }
+
+  const url = `${API_CONFIG.BASE_URL}/search.json?key=${API_CONFIG.API_KEY}&q=${encodeURIComponent(query)}`;
+
+  try {
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      return [];
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('City search error:', error);
+    return [];
+  }
 }
 
 /**
@@ -117,11 +140,14 @@ export function isAPIKeyConfigured(): boolean {
  */
 export function getErrorMessage(error: unknown): string {
   if (error instanceof WeatherServiceError) {
-    if (error.code === '404') {
+    if (error.code === 1006 || error.code === '1006') {
       return 'City not found. Please check the spelling and try again.';
     }
-    if (error.code === '401') {
+    if (error.code === 2006 || error.code === '2006') {
       return 'Invalid API key. Please check your configuration.';
+    }
+    if (error.code === 1002 || error.code === '1002') {
+      return 'API key not provided. Please check your configuration.';
     }
     if (error.code === 'NETWORK_ERROR') {
       return 'Network error. Please check your internet connection.';

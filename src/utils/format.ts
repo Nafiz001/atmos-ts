@@ -56,10 +56,18 @@ export function capitalizeWords(text: string): string {
 }
 
 /**
- * Get OpenWeatherMap icon URL
+ * Get WeatherAPI.com icon URL
  */
-export function getWeatherIconUrl(iconCode: string): string {
-  return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+export function getWeatherIconUrl(iconPath: string): string {
+  // WeatherAPI.com returns icon path like "//cdn.weatherapi.com/weather/64x64/day/113.png"
+  // We need to ensure it has https:// prefix
+  if (iconPath.startsWith('//')) {
+    return `https:${iconPath}`;
+  }
+  if (iconPath.startsWith('http')) {
+    return iconPath;
+  }
+  return `https://cdn.weatherapi.com/weather/64x64${iconPath}`;
 }
 
 /**

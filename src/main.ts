@@ -6,6 +6,7 @@
 import type { TemperatureUnit, Theme, AppState } from './types/weather.js';
 import { getWeatherByCity, getErrorMessage } from './services/weatherService.js';
 import { WeatherCard } from './components/WeatherCard.js';
+import { Autocomplete } from './components/Autocomplete.js';
 import { getElement } from './utils/dom.js';
 
 /**
@@ -22,6 +23,7 @@ const STORAGE_KEYS = {
  */
 class AtmosApp {
   private weatherCard: WeatherCard;
+  private autocomplete: Autocomplete;
   private searchInput: HTMLInputElement;
   private searchButton: HTMLButtonElement;
   private unitToggle: HTMLButtonElement;
@@ -47,6 +49,12 @@ class AtmosApp {
     this.searchButton = getElement<HTMLButtonElement>('search-button');
     this.unitToggle = getElement<HTMLButtonElement>('unit-toggle');
     this.themeToggle = getElement<HTMLButtonElement>('theme-toggle');
+
+    // Initialize autocomplete
+    this.autocomplete = new Autocomplete(this.searchInput);
+    this.autocomplete.onSelect((city) => {
+      this.searchWeather(city.name);
+    });
 
     // Setup event listeners
     this.setupEventListeners();

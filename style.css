@@ -229,6 +229,7 @@ button {
   gap: var(--spacing-sm);
   max-width: 600px;
   margin: 0 auto;
+  position: relative;
 }
 
 .search-input {
@@ -250,6 +251,96 @@ button {
 
 .search-input::placeholder {
   color: var(--color-text-secondary);
+}
+
+/* ========================================
+   Autocomplete
+   ======================================== */
+
+.autocomplete-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 80px;
+  margin-top: 4px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+}
+
+.autocomplete-suggestions.visible {
+  display: block;
+  animation: slideDown 200ms ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.autocomplete-item {
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  transition: background-color var(--transition-fast);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.selected {
+  background-color: var(--color-surface-hover);
+}
+
+.autocomplete-item .country-flag {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.autocomplete-item .city-name {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.autocomplete-item .country-name {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+/* Custom scrollbar for autocomplete */
+.autocomplete-suggestions::-webkit-scrollbar {
+  width: 8px;
+}
+
+.autocomplete-suggestions::-webkit-scrollbar-track {
+  background: var(--color-background);
+  border-radius: var(--radius-sm);
+}
+
+.autocomplete-suggestions::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.autocomplete-suggestions::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
 }
 
 /* ========================================
@@ -476,6 +567,10 @@ button {
 
   .search-container {
     flex-direction: column;
+  }
+
+  .autocomplete-suggestions {
+    right: 0;
   }
 
   .search-button {

@@ -1,140 +1,181 @@
 # Atmos Weather App - Setup Guide
 
-## Prerequisites
+## 🚀 Quick Start
+
+### Prerequisites
 
 - Node.js (v14 or higher)
 - npm or yarn
 - A modern web browser
 
-## Installation Steps
+### Installation
 
-### 1. Clone the Repository
-
+**1. Clone the repository:**
 ```bash
-git clone <repository-url>
+git clone https://github.com/Nafiz001/atmos-ts.git
 cd atmos
 ```
 
-### 2. Install Dependencies
-
+**2. Install dependencies:**
 ```bash
 npm install
 ```
 
-### 3. Get Your OpenWeatherMap API Key
+**3. Get your WeatherAPI.com API key:**
+- Sign up at [WeatherAPI.com](https://www.weatherapi.com/signup.aspx)
+- Copy your API key from the dashboard
 
-1. Go to [OpenWeatherMap](https://openweathermap.org/api)
-2. Sign up for a free account
-3. Navigate to your API keys section
-4. Copy your API key
+**4. Configure your API key:**
+```bash
+# Copy the example config
+cp src/config.example.ts src/config.ts
+```
 
-### 4. Configure the API Key
-
-Open `src/services/weatherService.ts` and replace the placeholder:
-
+Edit `src/config.ts` and add your API key:
 ```typescript
-const API_CONFIG = {
-  BASE_URL: 'https://api.openweathermap.org/data/2.5',
-  API_KEY: 'YOUR_API_KEY_HERE', // Replace with your actual API key
-  DEFAULT_UNITS: 'metric',
+export const config = {
+  weatherApiKey: 'your-actual-api-key-here',
 } as const;
 ```
 
-### 5. Build the Project
+⚠️ **Important:** `src/config.ts` is gitignored to keep your API key secure!
 
+**5. Build and run:**
 ```bash
 npm run build
-```
-
-This compiles TypeScript files from `src/` to JavaScript in `dist/`.
-
-### 6. Serve the Application
-
-Option A: Using npm serve (recommended)
-```bash
 npm run serve
 ```
 
-Option B: Using Python's built-in server
-```bash
-python -m http.server 8000
-```
+Open http://localhost:3000 in your browser.
 
-Option C: Using VS Code Live Server extension
-- Install "Live Server" extension
-- Right-click on `index.html`
-- Select "Open with Live Server"
+## ✨ Features
 
-### 7. Open in Browser
+### 🔍 Dynamic City Search (NEW!)
+- **Live API-based autocomplete** - Real-time city suggestions as you type
+- **Global coverage** - Search cities from around the world
+- **Smart suggestions** - Shows city name, region, and country
+- **Keyboard navigation** - Use arrow keys and Enter to select
 
-Navigate to:
-- `http://localhost:3000` (if using npm serve)
-- `http://localhost:8000` (if using Python server)
-- Or the port shown by your server
+### 🌤️ Weather Information
+- Current temperature with °C/°F toggle
+- Feels like temperature
+- Humidity and wind speed
+- Weather condition with icon
+- City and country information
 
-## Development
+### 🎨 UI Features
+- Dark/Light theme toggle
+- Responsive design (mobile & desktop)
+- Smooth animations
+- LocalStorage for preferences
+- Clean, modern interface
 
-### Watch Mode
+## 🔧 Development
 
-To automatically recompile TypeScript on changes:
-
+**Watch mode** (auto-recompile on changes):
 ```bash
 npm run watch
 ```
 
-Keep this running in one terminal while developing.
+**Manual build:**
+```bash
+npm run build
+```
 
-## Features to Try
+## 📡 API Integration
 
-1. **Search for Weather**: Enter any city name and press Search
-2. **Toggle Temperature Units**: Click "Switch to °F/°C" button
-3. **Change Theme**: Click the moon/sun icon to toggle dark/light mode
-4. **Persistent Settings**: Your last search and preferences are saved
+This app uses **WeatherAPI.com** which provides:
 
-## Troubleshooting
+### Endpoints Used
 
-### API Key Issues
+1. **Search/Autocomplete API** (`/v1/search.json`)
+   - Real-time city search suggestions
+   - Returns city name, region, country, coordinates
+   - Triggered when typing 2+ characters
+   - Debounced to avoid excessive API calls
 
-If you see "API key not configured":
-- Make sure you replaced `YOUR_API_KEY_HERE` with your actual key
-- Rebuild the project: `npm run build`
+2. **Current Weather API** (`/v1/current.json`)
+   - Real-time weather data
+   - Temperature, humidity, wind speed
+   - Weather conditions and icons
 
-### City Not Found
+### API Benefits
+- ✅ 1 million free calls per month
+- ✅ No credit card required
+- ✅ Real-time data updates
+- ✅ Global coverage
 
-- Check spelling of city name
-- Try adding country code: "London,UK"
-- Some smaller cities may not be in the database
+## 🛠️ Troubleshooting
 
-### Network Errors
+**No autocomplete suggestions?**
+- Type at least 2 characters
+- Check internet connection
+- Verify API key in `src/config.ts`
 
-- Check your internet connection
-- Verify the API key is valid
-- Check if you've exceeded the free tier limit (60 calls/minute)
+**City not found?**
+- Try selecting from autocomplete suggestions
+- Check spelling
+- Try adding more specific location details
 
-## Project Structure
+**API key errors?**
+- Ensure `src/config.ts` exists (copy from `config.example.ts`)
+- Verify key is correct
+- Rebuild: `npm run build`
+
+**Build errors?**
+- Delete `node_modules` and `dist` folders
+- Run `npm install` again
+- Run `npm run build`
+
+## 📂 Project Structure
 
 ```
 atmos/
-├── index.html              # Main HTML file
-├── style.css               # All CSS styles
-├── package.json            # Project configuration
-├── tsconfig.json           # TypeScript configuration
-├── src/                    # TypeScript source files
-│   ├── main.ts            # Application entry point
-│   ├── types/             # TypeScript type definitions
-│   ├── services/          # API service layer
-│   ├── components/        # UI components
-│   └── utils/             # Utility functions
-└── dist/                  # Compiled JavaScript (generated)
+├── src/
+│   ├── config.example.ts      # Example config (safe to commit)
+│   ├── config.ts              # Your config (NEVER commit!)
+│   ├── main.ts                # App entry point
+│   ├── types/weather.ts       # TypeScript types
+│   ├── services/
+│   │   └── weatherService.ts  # Weather & search API
+│   ├── components/
+│   │   ├── WeatherCard.ts     # Weather display
+│   │   └── Autocomplete.ts    # Dynamic search
+│   ├── utils/                 # Helper functions
+│   └── data/cities.ts         # Fallback city list
+├── dist/                      # Compiled JS (auto-generated)
+├── index.html
+├── style.css
+└── package.json
 ```
 
-## Browser Compatibility
+## 🔒 Security
 
-- Chrome/Edge: Latest 2 versions
-- Firefox: Latest 2 versions
-- Safari: Latest 2 versions
-- Mobile browsers: iOS Safari 12+, Chrome Android latest
+**Best Practices:**
+- ✅ API key stored in `src/config.ts` (gitignored)
+- ✅ Example config provided for setup
+- ✅ Never commit actual API keys
+- ⚠️ For production: Use backend proxy with environment variables
 
-## License
+**If you accidentally commit your API key:**
+1. Regenerate it at WeatherAPI.com
+2. Update `src/config.ts`
+3. Remove from git history
+4. Push the fix
 
-MIT License - Feel free to use this project for learning and personal use.
+## 🌐 Browser Support
+
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+
+- Mobile browsers (iOS Safari 12+, Chrome Android)
+
+## 📝 License
+
+MIT License - Free to use for learning and personal projects
+
+## 🙏 Credits
+
+- Weather data: [WeatherAPI.com](https://www.weatherapi.com/)
+- Built with: Vanilla TypeScript (no frameworks!)
+- Icons: WeatherAPI.com weather icons
