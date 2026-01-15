@@ -6,7 +6,7 @@
 import type { TemperatureUnit, Theme, AppState } from './types/weather.js';
 import { getWeatherByCity, getErrorMessage } from './services/weatherService.js';
 import { WeatherCard } from './components/WeatherCard.js';
-import { getElement, toggleClass } from './utils/dom.js';
+import { getElement } from './utils/dom.js';
 
 /**
  * Local Storage Keys
