@@ -2,9 +2,13 @@
  * Autocomplete Component for City Search
  */
 
-import type { City } from '../data/cities.js';
 import { searchCities } from '../services/weatherService.js';
 import { createElement, addClass, removeClass } from '../utils/dom.js';
+
+interface City {
+  name: string;
+  country: string;
+}
 
 interface APICityResult {
   name: string;
@@ -150,8 +154,7 @@ export class Autocomplete {
           const selectedCity = this.suggestions[this.selectedIndex];
           const cityData: City = {
             name: selectedCity.name,
-            country: selectedCity.country,
-            countryCode: ''
+            country: selectedCity.country
           };
           this.selectSuggestion(cityData);
         }
@@ -193,8 +196,7 @@ export class Autocomplete {
       item.addEventListener('click', () => {
         const cityData: City = {
           name: city.name,
-          country: city.country,
-          countryCode: ''
+          country: city.country
         };
         this.selectSuggestion(cityData);
       });

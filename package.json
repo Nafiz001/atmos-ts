@@ -4,6 +4,7 @@
   "description": "Vanilla TypeScript Weather Application",
   "scripts": {
     "build": "tsc",
+    "vercel-build": "npm run build && node copy-static.js",
     "watch": "tsc --watch",
     "serve": "npx serve ."
   },

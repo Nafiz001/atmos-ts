@@ -101,7 +101,7 @@ export async function getWeatherByCity(city: string): Promise<WeatherData> {
  * Validate if the API key is configured
  */
 export function isAPIKeyConfigured(): boolean {
-  return API_CONFIG.API_KEY.length > 0 && API_CONFIG.API_KEY !== 'YOUR_API_KEY_HERE';
+  return API_CONFIG.API_KEY.length > 0;
 }
 
 /**

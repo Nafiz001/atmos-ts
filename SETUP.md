@@ -141,8 +141,7 @@ atmos/
 │   ├── components/
 │   │   ├── WeatherCard.ts     # Weather display
 │   │   └── Autocomplete.ts    # Dynamic search
-│   ├── utils/                 # Helper functions
-│   └── data/cities.ts         # Fallback city list
+│   └── utils/                 # Helper functions
 ├── dist/                      # Compiled JS (auto-generated)
 ├── index.html
 ├── style.css
